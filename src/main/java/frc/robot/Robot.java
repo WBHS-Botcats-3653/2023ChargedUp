@@ -7,11 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import frc.robot.subsystems.Drivetrain;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -25,20 +21,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
-  private static final double kVoltsPerDegreePerSecond = 0.0128;
-
-  private static final int kFrontLeftChannel = 2;
-  private static final int kRearLeftChannel = 3;
-  private static final int kFrontRightChannel = 1;
-  private static final int kRearRightChannel = 0;
-
-  private static final int kJoystickChannel = 0;
-
-  private static final int kGyroPort = 0;
-
-  private MecanumDrive m_robotDrive;
-  private Joystick m_stick;
-  private final AnalogGyro m_gyro = new AnalogGyro(kGyroPort);
+  private Drivetrain m_drivetrain;
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -50,21 +33,7 @@ public class Robot extends TimedRobot {
     m_chooser.addOption("My Auto", kCustomAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
-    WPI_VictorSPX m_frontLeftMotor = new WPI_VictorSPX(kFrontLeftChannel);
-    WPI_VictorSPX m_frontRightMotor = new WPI_VictorSPX(kFrontRightChannel);
-    WPI_VictorSPX m_rearLeftMotor = new WPI_VictorSPX(kRearLeftChannel);
-    WPI_VictorSPX m_rearRightMotor = new WPI_VictorSPX(kRearRightChannel);
-
-    // Invert the right side motors.
-    // You may need to change or remove this to match your robot.
-    m_frontRightMotor.setInverted(true);
-    m_rearRightMotor.setInverted(true);
-
-    m_robotDrive = new MecanumDrive(m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor);
-
-    m_stick = new Joystick(kJoystickChannel);
-
-    m_gyro.setSensitivity(kVoltsPerDegreePerSecond);
+    m_drivetrain = Drivetrain.getInstance();
   }
 
   /**
@@ -115,9 +84,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    // Use the joystick Y axis for forward movement, X axis for lateral
-    // movement, and Z axis for rotation.
-    m_robotDrive.driveCartesian(-m_stick.getX(), -m_stick.getY(), -m_stick.getZ(), m_gyro.getRotation2d());
+    m_drivetrain.drivePeriodic();
   }
 
   /** This function is called once when the robot is disabled. */

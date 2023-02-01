@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import static frc.robot.Constants.*;
-import edu.wpi.first.wpilibj.interfaces.*;
+//import edu.wpi.first.wpilibj.interfaces.*;
 
 public class Drivetrain {
     private static Drivetrain m_singleton = null;
@@ -56,7 +56,7 @@ public class Drivetrain {
             // rotation is not approximately horizontal
             m_robotDrive.driveCartesian(-m_controller.getLeftY(), m_controller.getLeftX(), m_controller.getRightX(), m_gyro.getRotation2d());
         }*/
-        m_robotDrive.driveCartesian(-m_controller.getLeftY(), m_controller.getLeftX(), m_controller.getRightX(), m_gyro.getRotation2d());
+        m_robotDrive.driveCartesian(-m_controller.getLeftY(), m_controller.getLeftX(), m_controller.getRightX());
     } 
 
     //Calibrates the gyro

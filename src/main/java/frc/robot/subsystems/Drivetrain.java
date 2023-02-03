@@ -1,10 +1,10 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import static frc.robot.Constants.*;
 //import edu.wpi.first.wpilibj.interfaces.*;
 
 public class Drivetrain {

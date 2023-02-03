@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Limelight;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,7 +23,7 @@ public class Robot extends TimedRobot {
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private Drivetrain m_drivetrain;
-
+  private Limelight m_limelight;
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -34,6 +35,7 @@ public class Robot extends TimedRobot {
     SmartDashboard.putData("Auto choices", m_chooser);
 
     m_drivetrain = Drivetrain.getInstance();
+    m_limelight = new Limelight();
   }
 
   /**
@@ -85,6 +87,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     m_drivetrain.drivePeriodic();
+    m_limelight.SmartDashboardPeriodic();
   }
 
   /** This function is called once when the robot is disabled. */

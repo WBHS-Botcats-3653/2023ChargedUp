@@ -2,7 +2,6 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.*;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 //import edu.wpi.first.wpilibj.interfaces.*;
@@ -10,15 +9,17 @@ import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 public class Drivetrain {
     private static Drivetrain m_singleton = null;
 
+    private OI m_input;
+
     WPI_VictorSPX m_frontLeftMotor, m_frontRightMotor, m_rearLeftMotor, m_rearRightMotor;
 
     private MecanumDrive m_robotDrive;
 
-    private XboxController m_controller; 
-
     private ADXRS450_Gyro m_gyro;
     
-    public Drivetrain() {
+    private Drivetrain() {
+        m_input = OI.getInstance();
+
         m_frontLeftMotor = new WPI_VictorSPX(kFrontLeftChannel);
         m_rearLeftMotor = new WPI_VictorSPX(kRearLeftChannel);
         m_frontRightMotor = new WPI_VictorSPX(kFrontRightChannel);
@@ -30,8 +31,6 @@ public class Drivetrain {
         m_rearRightMotor.setInverted(true);
 
         m_robotDrive = new MecanumDrive(m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor);
-
-        m_controller = new XboxController(0);
 
         m_gyro = new ADXRS450_Gyro();
         m_gyro.calibrate();
@@ -56,7 +55,7 @@ public class Drivetrain {
             // rotation is not approximately horizontal
             m_robotDrive.driveCartesian(-m_controller.getLeftY(), m_controller.getLeftX(), m_controller.getRightX(), m_gyro.getRotation2d());
         }*/
-        m_robotDrive.driveCartesian(-m_controller.getLeftY(), m_controller.getLeftX(), m_controller.getRightX());
+        m_robotDrive.driveCartesian(-m_input.getLeftY(), m_input.getLeftX(), m_input.getRightX());
     } 
 
     //Calibrates the gyro

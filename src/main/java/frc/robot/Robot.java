@@ -8,7 +8,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
+//import frc.robot.subsystems.Intake;
+//import frc.robot.subsytems.Spindexer;
+import frc.robot.subsystems.Position;
 import frc.robot.subsystems.Limelight;
+
+import frc.robot.subsystems.DumpBucket;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,25 +22,38 @@ import frc.robot.subsystems.Limelight;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
+  private static final String kParkAuto = "Park Auto";
+  private static final String kMobilizeAuto = "Mobilize Auto";
+  private static final String kChargeAuto = "Charge Station Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private Drivetrain m_drivetrain;
+  //private Intake m_intake;
+  //private Spindexer m_spindexer;
+  public Position m_position;
   private Limelight m_limelight;
+
+  private DumpBucket m_dumper;
+
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
-  public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
+  public void robotInit() {    
+    m_chooser.setDefaultOption("Park Auto", kParkAuto);
+    m_chooser.addOption("Mobilize Auto", kMobilizeAuto);
+    m_chooser.addOption("Charge Station Auto", kChargeAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
     m_drivetrain = Drivetrain.getInstance();
-    m_limelight = new Limelight();
+    //m_intake = Intake.getInstance();
+    //m_Spindexer = Spindexer.getInstance();
+    m_position = Position.getInstance();
+    m_limelight = Limelight.getInstance();
+    
+    m_dumper = DumpBucket.getInstance();
   }
 
   /**
@@ -60,39 +78,63 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    Constants.resetTimer();
+
     m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    m_autoSelected = SmartDashboard.getString("Auto Selector", kParkAuto);
     System.out.println("Auto selected: " + m_autoSelected);
+    m_position.calibrateGyro();
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
+    Constants.count();
+
     switch (m_autoSelected) {
-      case kCustomAuto:
-        // Put custom auto code here
+      case kParkAuto:
+        // Put Park auto code here
+        m_drivetrain.parkPeriodic();
         break;
-      case kDefaultAuto:
+      case kMobilizeAuto:
+        // Put mobilize auto code here
+        m_drivetrain.mobilizePeriodic();
+        break;
+      case kChargeAuto:
       default:
-        // Put default auto code here
+        // Put charge station auto code here
+        m_position.gyroPeriodic();
+        m_drivetrain.chargePeriodic();
         break;
     }
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
-  public void teleopInit() {}
+  public void teleopInit() {
+    Constants.resetTimer();
+    m_position.calibrateGyro();
+  }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    Constants.count();
     m_drivetrain.drivePeriodic();
-    m_limelight.SmartDashboardPeriodic();
+    //m_intake.intakePeriodic();
+    //m_spindexer.spindexerPeriodic();
+    m_position.gyroPeriodic();
+    m_limelight.smartDashboardPeriodic();
+
+    //m_dumper.dumpBucketPeriodic();
   }
 
   /** This function is called once when the robot is disabled. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_drivetrain.parkPeriodic();
+    m_dumper.dumpBucketDisabled();
+  }
 
   /** This function is called periodically when disabled. */
   @Override

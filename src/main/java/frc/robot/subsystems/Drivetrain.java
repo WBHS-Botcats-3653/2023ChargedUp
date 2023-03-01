@@ -1,43 +1,81 @@
 package frc.robot.subsystems;
 
 import static frc.robot.Constants.*;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
-import edu.wpi.first.wpilibj.drive.MecanumDrive;
-import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-//import edu.wpi.first.wpilibj.interfaces.*;
+import frc.robot.Constants;
+import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 
 public class Drivetrain {
     private static Drivetrain m_singleton = null;
 
-    private OI m_input;
+    private static OI m_input;
 
-    WPI_VictorSPX m_frontLeftMotor, m_frontRightMotor, m_rearLeftMotor, m_rearRightMotor;
+    private Position m_position;
 
-    private MecanumDrive m_robotDrive;
+    private WPI_TalonSRX m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor;
 
-    private ADXRS450_Gyro m_gyro;
-    
+    private DifferentialDrive m_robotDrive;
+
+    private SlewRateLimiter m_throttleFilter;
+    private SlewRateLimiter m_rotationFilter;
+
     private Drivetrain() {
         m_input = OI.getInstance();
+        m_position = Position.getInstance();
 
-        m_frontLeftMotor = new WPI_VictorSPX(kFrontLeftChannel);
-        m_rearLeftMotor = new WPI_VictorSPX(kRearLeftChannel);
-        m_frontRightMotor = new WPI_VictorSPX(kFrontRightChannel);
-        m_rearRightMotor = new WPI_VictorSPX(kRearRightChannel);
+        m_frontLeftMotor = new WPI_TalonSRX(kFrontRightWheelChannel);
+        m_rearLeftMotor = new WPI_TalonSRX(kRearRightWheelChannel);
+        m_frontRightMotor = new WPI_TalonSRX(kFrontLeftWheelChannel);
+        m_rearRightMotor = new WPI_TalonSRX(kRearLeftWheelChannel);
 
-        // Invert the right side motors.
-        // You may need to change or remove this to match your robot.
+
+        // groups the wheel motors
+		MotorControllerGroup driveLeft = new MotorControllerGroup(m_frontLeftMotor, m_rearLeftMotor);
+		MotorControllerGroup driveRight = new MotorControllerGroup(m_frontRightMotor, m_rearRightMotor);
+
+        // sets the motors to brake mode
+        m_frontLeftMotor.setNeutralMode(NeutralMode.Brake);
+        m_rearLeftMotor.setNeutralMode(NeutralMode.Brake);
+        m_frontRightMotor.setNeutralMode(NeutralMode.Brake);
+        m_rearRightMotor.setNeutralMode(NeutralMode.Brake);
+
+        // sets the motors maximum current limit to 35 amps and enforce it when its exceded for 100 milliseconds
+        m_frontLeftMotor.configPeakCurrentLimit(40, 0);
+        m_frontLeftMotor.configPeakCurrentDuration(100, 0);
+        m_frontLeftMotor.configContinuousCurrentLimit(35);
+        m_frontLeftMotor.enableCurrentLimit(true);
+
+        m_rearLeftMotor.configPeakCurrentLimit(40, 0);
+        m_rearLeftMotor.configPeakCurrentDuration(100, 0);
+        m_rearLeftMotor.configContinuousCurrentLimit(35);
+        m_rearLeftMotor.enableCurrentLimit(true);
+
+        m_frontRightMotor.configPeakCurrentLimit(40, 0);
+        m_frontRightMotor.configPeakCurrentDuration(100, 0);
+        m_frontRightMotor.configContinuousCurrentLimit(35);
+        m_frontRightMotor.enableCurrentLimit(true);
+
+        m_rearRightMotor.configPeakCurrentLimit(40, 0);
+        m_rearRightMotor.configPeakCurrentDuration(100, 0);
+        m_rearRightMotor.configContinuousCurrentLimit(35);
+        m_rearRightMotor.enableCurrentLimit(true);
+
+        // invert the right side motors
         m_frontRightMotor.setInverted(true);
         m_rearRightMotor.setInverted(true);
 
-        m_robotDrive = new MecanumDrive(m_frontLeftMotor, m_rearLeftMotor, m_frontRightMotor, m_rearRightMotor);
+        // creates the robot drive
+		m_robotDrive = new DifferentialDrive(driveLeft, driveRight);
 
-        m_gyro = new ADXRS450_Gyro();
-        m_gyro.calibrate();
-        //Rotation2d rotation = m_gyro.getRotation2d();
+        // slew rate limiters create limits on the acceleration for smoother driving
+        m_throttleFilter = new SlewRateLimiter(kThrottleAcceleration);
+        m_rotationFilter = new SlewRateLimiter(kRotationAcceleartion);
     }
 
-    //Returns an instance of DrainTrain, creating an instance only when one does not already exist
+    // returns an instance of DriveTrain, creating an instance only when one does not already exist
 	public static Drivetrain getInstance() {
 		if (m_singleton == null) {
 			m_singleton = new Drivetrain();
@@ -46,35 +84,45 @@ public class Drivetrain {
 	}
     
     public void drivePeriodic() {
-        //Use the joystick Y axis for forward movement, X axis for lateral
-        // movement, and Z axis for rotation.
-        /*if (Math.abs(rotation.sin()) < 1e-9) {
-            // rotation is approximately horizontal
-            m_robotDrive.driveCartesian(m_controller.getLeftY(), m_controller.getLeftX(), m_controller.getRightX(), m_gyro.getRotation2d());
-        } else {
-            // rotation is not approximately horizontal
-            m_robotDrive.driveCartesian(-m_controller.getLeftY(), m_controller.getLeftX(), m_controller.getRightX(), m_gyro.getRotation2d());
-        }*/
-        m_robotDrive.driveCartesian(-m_input.getLeftY(), m_input.getLeftX(), m_input.getRightX());
+        //if (m_input.getP1LeftBumperPressed() || m_input.getP1RightBumperPressed()) {
+        //    m_robotDrive.arcadeDrive(m_throttleFilter.calculate(-m_input.getP1LeftY()) / 5, -m_input.getP1RightX() / 5);
+        //} else {
+        //    m_robotDrive.arcadeDrive(m_throttleFilter.calculate(-m_input.getP1LeftY()), m_rotationFilter.calculate.calculate(-m_input.getP1RightX()));
+        //}
+        //m_robotDrive.arcadeDrive(m_throttleFilter.calculate(-m_input.getP1LeftY()), m_rotationFilter.calculate(-m_input.getP1RightX()));
+        m_robotDrive.arcadeDrive(-m_input.getP1LeftY(), -m_input.getP1RightX());
     } 
 
-    //Calibrates the gyro
-	public void calibrateGyro() {
-		m_gyro.calibrate();
-	}
+    public void parkPeriodic() {
+        m_robotDrive.arcadeDrive(0, 0);
+    }
 
-    //Returns the gyro
-	public ADXRS450_Gyro getGyro() {
-		return m_gyro;
-	}
+    public void chargePeriodic() {
+        if (m_position.getGyroZAngle() > 8) {
+            m_robotDrive.arcadeDrive(0, -0.555);
+        }
+        else if (m_position.getGyroZAngle() < -8) {
+            m_robotDrive.arcadeDrive(0, 0.555);
+        }
 
-	//Returns the angle
-	public double getAngle() {
-		return m_gyro.getAngle();
-	}
-
-	//Returns the rate
-	public double getRate() {
-		return m_gyro.getRate();
-	}
+        //if (m_position.getAccelY() > 0.3) {
+        //    m_robotDrive.arcadeDrive(-0.4, 0);
+        //}
+        //else if (m_position.getAccelY() < -0.3) {
+        //    m_robotDrive.arcadeDrive(0.4, 0);
+        //}
+    }
+    
+    public void mobilizePeriodic() {
+        if (Constants.getTime() < 15) {
+            if (m_position.getGyroZAngle() > 8) {
+                m_robotDrive.arcadeDrive(0, -0.555);
+            }
+            else if (m_position.getGyroZAngle() < -8) {
+                m_robotDrive.arcadeDrive(0, 0.555);
+            } else {
+                m_robotDrive.arcadeDrive(0.3, 0);
+            }
+        }
+    }   
 }

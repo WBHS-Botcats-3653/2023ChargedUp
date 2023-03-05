@@ -1,2 +1,2 @@
-# 2023ChargedUp - Dumpy
-Team 3653 Botcat's repository for our first robot Dumpy for 2023 FRC game.
+# 2023ChargedUp2ElectricBoogaloo
+Team 3653 Botcat's repository for our second robot for the 2023 FRC game.

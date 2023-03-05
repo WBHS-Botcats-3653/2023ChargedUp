@@ -51,12 +51,12 @@ public class OI {
         return m_p1Controller.getRightTriggerAxis();
     }
 
-    public boolean getP1LeftBumperPressed() {
-        return m_p1Controller.getLeftBumperPressed();
+    public boolean getP1LeftBumperDown() {
+        return m_p1Controller.getLeftBumper();
     }
 
-    public boolean getP1RightBumperPressed() {
-        return m_p1Controller.getRightBumperPressed();
+    public boolean getP1RightBumperDown() {
+        return m_p1Controller.getRightBumper();
     }
 
     /** 
@@ -89,11 +89,11 @@ public class OI {
         return m_p2Controller.getRightTriggerAxis();
     }
 
-    public boolean getP2LeftBumperPressed() {
-        return m_p2Controller.getLeftBumperPressed();
+    public boolean getP2LeftBumperDown() {
+        return m_p2Controller.getLeftBumper();
     }
 
-    public boolean getP2RightBumperPressed() {
-        return m_p2Controller.getRightBumperPressed();
+    public boolean getP2RightBumperDown() {
+        return m_p2Controller.getRightBumper();
     }
 }

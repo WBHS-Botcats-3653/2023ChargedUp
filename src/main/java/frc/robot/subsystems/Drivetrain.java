@@ -11,7 +11,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 public class Drivetrain {
     private static Drivetrain m_singleton = null;
 
-    private static OI m_input;
+    private OI m_input;
 
     private Position m_position;
 
@@ -42,7 +42,7 @@ public class Drivetrain {
         m_frontRightMotor.setNeutralMode(NeutralMode.Brake);
         m_rearRightMotor.setNeutralMode(NeutralMode.Brake);
 
-        // sets the motors maximum current limit to 35 amps and enforce it when its exceded for 100 milliseconds
+        // sets the motors maximum current limit to 40 amps and enforce it when its exceded for 100 milliseconds
         m_frontLeftMotor.configPeakCurrentLimit(40, 0);
         m_frontLeftMotor.configPeakCurrentDuration(100, 0);
         m_frontLeftMotor.configContinuousCurrentLimit(35);
@@ -84,13 +84,11 @@ public class Drivetrain {
 	}
     
     public void drivePeriodic() {
-        //if (m_input.getP1LeftBumperPressed() || m_input.getP1RightBumperPressed()) {
-        //    m_robotDrive.arcadeDrive(m_throttleFilter.calculate(-m_input.getP1LeftY()) / 5, -m_input.getP1RightX() / 5);
-        //} else {
-        //    m_robotDrive.arcadeDrive(m_throttleFilter.calculate(-m_input.getP1LeftY()), m_rotationFilter.calculate.calculate(-m_input.getP1RightX()));
-        //}
-        //m_robotDrive.arcadeDrive(m_throttleFilter.calculate(-m_input.getP1LeftY()), m_rotationFilter.calculate(-m_input.getP1RightX()));
-        m_robotDrive.arcadeDrive(-m_input.getP1LeftY(), -m_input.getP1RightX());
+        if (m_input.getP1LeftBumperDown() || m_input.getP1RightBumperDown()) {
+            m_robotDrive.arcadeDrive(m_input.getP1LeftY() / kSlowDriveCoefficient, -m_input.getP1RightX() / kSlowDriveCoefficient);
+        } else {
+            m_robotDrive.arcadeDrive(m_input.getP1LeftY(), -m_input.getP1RightX());
+        }
     } 
 
     public void parkPeriodic() {
@@ -114,15 +112,19 @@ public class Drivetrain {
     }
     
     public void mobilizePeriodic() {
-        if (Constants.getTime() < 15) {
-            if (m_position.getGyroZAngle() > 8) {
-                m_robotDrive.arcadeDrive(0, -0.555);
-            }
-            else if (m_position.getGyroZAngle() < -8) {
-                m_robotDrive.arcadeDrive(0, 0.555);
-            } else {
-                m_robotDrive.arcadeDrive(0.3, 0);
-            }
+        if (Constants.getTime() < 6.8 && Constants.getTime() > 3.8) {
+            //if (m_position.getGyroZAngle() > 8) {
+            //    m_robotDrive.arcadeDrive(0, -0.555);
+            //}
+            //else if (m_position.getGyroZAngle() < -8) {
+            //    m_robotDrive.arcadeDrive(0, 0.555);
+            //} else {
+            //    m_robotDrive.arcadeDrive(0.35, 0);
+            //}
+            m_frontLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+            m_rearLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+            m_frontRightMotor.set(0.4);
+            m_rearRightMotor.set(0.4);
         }
     }   
 }

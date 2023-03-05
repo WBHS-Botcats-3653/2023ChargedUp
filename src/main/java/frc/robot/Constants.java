@@ -23,12 +23,12 @@ public class Constants {
     public static final int kSpindexerChannel = 0;
 
     // drive control accelerations
-    public static final double kThrottleAcceleration = 0.3;
-    public static final double kRotationAcceleartion = 0.3;
+    public static final double kThrottleAcceleration = 1;
+    public static final double kRotationAcceleartion = 1;
 
     // DIO ports
-    public static final int kTopLimitSwitchPort = 0;
     public static final int kBottomLimitSwitchPort = 0;
+    public static final int kTopLimitSwitchPort = 1;
 
     // gryo I2C addresses
     public static final int kGyroAddress = 0x6b; // default I2C address for L3GD20H gyro
@@ -40,7 +40,10 @@ public class Constants {
     
     // controller port
     public static final int kP1XboxPort = 0;
-    public static final int kP2XboxPort = 1;
+    public static final int kP2XboxPort = 0;
+
+    // divides operator input by this number in slow driving mode
+    public static final double kSlowDriveCoefficient = 2;
 
     // this variable is actually not a constant 
     // it is being used to roughly tell how long its been in each phase of the game 
@@ -50,7 +53,7 @@ public class Constants {
         timer += 0.02;
     }
 
-    public static double getTime() {
+    public static double getTime() {    
         return timer;
     }
 

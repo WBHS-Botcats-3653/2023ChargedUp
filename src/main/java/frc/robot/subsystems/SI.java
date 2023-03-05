@@ -9,12 +9,8 @@ public class SI {
     private static SI m_singleton;
 
 	// limit switches
-	private static DigitalInput topLimitSwitch, bottomLimitSwitch;
-
-	private SI() {
-		topLimitSwitch = new DigitalInput(kTopLimitSwitchPort);
-		bottomLimitSwitch = new DigitalInput(kBottomLimitSwitchPort);
-	}
+	private static DigitalInput topLimitSwitch = new DigitalInput(kTopLimitSwitchPort);
+	private static DigitalInput bottomLimitSwitch = new DigitalInput(kBottomLimitSwitchPort);
 
 	public static SI getInstance() {
 		if (m_singleton == null) {
@@ -35,11 +31,11 @@ public class SI {
 
 	// return true if the top limit switch is not pressed
 	public static boolean topSwitchUp() {
-		return topLimitSwitch.get();
+		return !topLimitSwitch.get();
 	}
 
 	// returns true if the bottom limit switch is not pressed
 	public static boolean bottomSwitchUp() {
-		return bottomLimitSwitch.get();
+		return !bottomLimitSwitch.get();
 	}
 }

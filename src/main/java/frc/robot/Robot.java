@@ -4,15 +4,12 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.subsystems.Drivetrain;
-//import frc.robot.subsystems.Intake;
-//import frc.robot.subsytems.Spindexer;
 import frc.robot.subsystems.Position;
-import frc.robot.subsystems.Limelight;
-
 import frc.robot.subsystems.DumpBucket;
 
 /**
@@ -25,15 +22,12 @@ public class Robot extends TimedRobot {
   private static final String kParkAuto = "Park Auto";
   private static final String kMobilizeAuto = "Mobilize Auto";
   private static final String kChargeAuto = "Charge Station Auto";
+  private static final String kIdleAuto = "Idle Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   private Drivetrain m_drivetrain;
-  //private Intake m_intake;
-  //private Spindexer m_spindexer;
   public Position m_position;
-  private Limelight m_limelight;
-
   private DumpBucket m_dumper;
 
   /**
@@ -42,18 +36,16 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {    
-    m_chooser.setDefaultOption("Park Auto", kParkAuto);
+    m_chooser.setDefaultOption("Idle Auto", kIdleAuto);
+    m_chooser.addOption("Park Auto", kParkAuto);
     m_chooser.addOption("Mobilize Auto", kMobilizeAuto);
     m_chooser.addOption("Charge Station Auto", kChargeAuto);
     SmartDashboard.putData("Auto choices", m_chooser);
 
     m_drivetrain = Drivetrain.getInstance();
-    //m_intake = Intake.getInstance();
-    //m_Spindexer = Spindexer.getInstance();
     m_position = Position.getInstance();
-    m_limelight = Limelight.getInstance();
-    
     m_dumper = DumpBucket.getInstance();
+   //CameraServer.startAutomaticCapture(); // calls a singleton to automatically detect the first connected camera to the roborio. Also, hi nick! ;P
   }
 
   /**
@@ -81,7 +73,7 @@ public class Robot extends TimedRobot {
     Constants.resetTimer();
 
     m_autoSelected = m_chooser.getSelected();
-    m_autoSelected = SmartDashboard.getString("Auto Selector", kParkAuto);
+    // m_autoSelected = SmartDashboard.getString("Auto Selector", kParkAuto);
     System.out.println("Auto selected: " + m_autoSelected);
     m_position.calibrateGyro();
   }
@@ -89,22 +81,30 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    Constants.count();
-
+    Constants.count(); 
+    
     switch (m_autoSelected) {
       case kParkAuto:
-        // Put Park auto code here
+      // Put park auto code here
+        m_dumper.dumpBucketAutonomous();
         m_drivetrain.parkPeriodic();
         break;
       case kMobilizeAuto:
         // Put mobilize auto code here
+        m_dumper.dumpBucketAutonomous();
+        m_position.gyroPeriodic();
         m_drivetrain.mobilizePeriodic();
         break;
       case kChargeAuto:
-      default:
         // Put charge station auto code here
+        m_dumper.dumpBucketAutonomous();
         m_position.gyroPeriodic();
         m_drivetrain.chargePeriodic();
+        break;
+      case kIdleAuto:
+      default:
+        // Put idle auto code here
+        m_drivetrain.parkPeriodic();
         break;
     }
   }
@@ -121,12 +121,8 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
     Constants.count();
     m_drivetrain.drivePeriodic();
-    //m_intake.intakePeriodic();
-    //m_spindexer.spindexerPeriodic();
     m_position.gyroPeriodic();
-    m_limelight.smartDashboardPeriodic();
-
-    //m_dumper.dumpBucketPeriodic();
+    m_dumper.dumpBucketPeriodic();
   }
 
   /** This function is called once when the robot is disabled. */

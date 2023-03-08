@@ -4,7 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,10 +19,10 @@ import frc.robot.subsystems.DumpBucket;
  * project.
  */
 public class Robot extends TimedRobot {
+  private static final String kIdleAuto = "Idle Auto";
   private static final String kParkAuto = "Park Auto";
   private static final String kMobilizeAuto = "Mobilize Auto";
   private static final String kChargeAuto = "Charge Station Auto";
-  private static final String kIdleAuto = "Idle Auto";
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
@@ -45,7 +45,8 @@ public class Robot extends TimedRobot {
     m_drivetrain = Drivetrain.getInstance();
     m_position = Position.getInstance();
     m_dumper = DumpBucket.getInstance();
-   //CameraServer.startAutomaticCapture(); // calls a singleton to automatically detect the first connected camera to the roborio. Also, hi nick! ;P
+   // calls a singleton to automatically detect the first connected camera to the roborio
+   //CameraServer.startAutomaticCapture();
   }
 
   /**
@@ -85,7 +86,7 @@ public class Robot extends TimedRobot {
     
     switch (m_autoSelected) {
       case kParkAuto:
-      // Put park auto code here
+        // Put park auto code here
         m_dumper.dumpBucketAutonomous();
         m_drivetrain.parkPeriodic();
         break;

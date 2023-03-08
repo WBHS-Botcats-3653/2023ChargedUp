@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import static frc.robot.Constants.*;
 import frc.robot.Constants;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
@@ -17,7 +18,7 @@ public class DumpBucket {
     private DumpBucket() {
         m_input = OI.getInstance();
 
-        m_bucketWinch = new WPI_VictorSPX(1);
+        m_bucketWinch = new WPI_VictorSPX(kBucketWinchID);
 
         // sets the motors to brake mode
         m_bucketWinch.setNeutralMode(NeutralMode.Brake);

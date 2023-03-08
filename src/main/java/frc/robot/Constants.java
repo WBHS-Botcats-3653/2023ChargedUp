@@ -10,17 +10,12 @@ public class Constants {
      * motor controller IDs
      */
     // drivetrain
-    public static final int kFrontLeftWheelChannel = 11;
-    public static final int kRearLeftWheelChannel = 12;
-    public static final int kFrontRightWheelChannel = 13;
-    public static final int kRearRightWheelChannel = 14;
-    // intake
-    public static final int kLeftPivotChannel = 21;
-    public static final int kRightPivotChannel = 22;
-    public static final int kLowerRollerChannel = 23;
-    public static final int kUpperRollerChannel = 24;
-    // spindexer
-    public static final int kSpindexerChannel = 0;
+    public static final int kFrontLeftWheelID = 11;
+    public static final int kRearLeftWheelID = 12;
+    public static final int kFrontRightWheelID = 13;
+    public static final int kRearRightWheelID = 14;
+    // dumpbucket
+    public static final int kBucketWinchID = 1;
 
     // drive control accelerations
     public static final double kThrottleAcceleration = 1;
@@ -45,8 +40,7 @@ public class Constants {
     // divides operator input by this number in slow driving mode
     public static final double kSlowDriveCoefficient = 2;
 
-    // this variable is actually not a constant 
-    // it is being used to roughly tell how long its been in each phase of the game 
+    // this variable is actually not a constant, it is being used to roughly tell how long its been in each phase of the game 
     public static double timer = 0;
 
     public static void count() {
@@ -60,13 +54,4 @@ public class Constants {
     public static void resetTimer() {
         timer = 0;
     }
-
-/* 
-    // target objects dimensions in inches
-    public static final double kObjSize = 6;
-    // the vertical view angle from forward axis
-    public static final double kLimelightVerticalViewAngle = 20.5;
-    // the horizontal view angle from forward axis
-    public static final double kLimelightHorizontalViewAngle = 27;
-*/
 }

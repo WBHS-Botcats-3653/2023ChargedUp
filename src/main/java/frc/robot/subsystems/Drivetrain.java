@@ -26,10 +26,10 @@ public class Drivetrain {
         m_input = OI.getInstance();
         m_position = Position.getInstance();
 
-        m_frontLeftMotor = new WPI_TalonSRX(kFrontRightWheelChannel);
-        m_rearLeftMotor = new WPI_TalonSRX(kRearRightWheelChannel);
-        m_frontRightMotor = new WPI_TalonSRX(kFrontLeftWheelChannel);
-        m_rearRightMotor = new WPI_TalonSRX(kRearLeftWheelChannel);
+        m_frontLeftMotor = new WPI_TalonSRX(kFrontRightWheelID);
+        m_rearLeftMotor = new WPI_TalonSRX(kRearRightWheelID);
+        m_frontRightMotor = new WPI_TalonSRX(kFrontLeftWheelID);
+        m_rearRightMotor = new WPI_TalonSRX(kRearLeftWheelID);
 
 
         // groups the wheel motors
@@ -104,10 +104,16 @@ public class Drivetrain {
         }
 
         //if (m_position.getAccelY() > 0.3) {
-        //    m_robotDrive.arcadeDrive(-0.4, 0);
+        //      m_frontLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+        //      m_rearLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+        //      m_frontRightMotor.set(0.4);
+        //      m_rearRightMotor.set(0.4);    
         //}
         //else if (m_position.getAccelY() < -0.3) {
-        //    m_robotDrive.arcadeDrive(0.4, 0);
+        //      m_frontLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+        //      m_rearLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+        //      m_frontRightMotor.set(0.4);
+        //      m_rearRightMotor.set(0.4);
         //}
     }
     
@@ -119,7 +125,10 @@ public class Drivetrain {
             //else if (m_position.getGyroZAngle() < -8) {
             //    m_robotDrive.arcadeDrive(0, 0.555);
             //} else {
-            //    m_robotDrive.arcadeDrive(0.35, 0);
+            //    m_frontLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+            //    m_rearLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
+            //    m_frontRightMotor.set(0.4);
+            //    m_rearRightMotor.set(0.4);
             //}
             m_frontLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);
             m_rearLeftMotor.set(0.4 * 1.0674157303 * 1.0235294118 * 0.9714285714);

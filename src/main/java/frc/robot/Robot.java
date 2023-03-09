@@ -47,6 +47,8 @@ public class Robot extends TimedRobot {
     m_dumper = DumpBucket.getInstance();
 <<<<<<< HEAD
     //CameraServer.startAutomaticCapture(); // calls a singleton to automatically detect the first connected camera to the roborio. Also, hi nick! ;P
+   // calls a singleton to automatically detect the first connected camera to the roborio
+   //CameraServer.startAutomaticCapture();
 =======
    // calls a singleton to automatically detect the first connected camera to the roborio
    //CameraServer.startAutomaticCapture();

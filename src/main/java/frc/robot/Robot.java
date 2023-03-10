@@ -4,10 +4,10 @@
 
 package frc.robot;
 
-//import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.cameraserver.CameraServer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Position;
 import frc.robot.subsystems.DumpBucket;
@@ -45,14 +45,8 @@ public class Robot extends TimedRobot {
     m_drivetrain = Drivetrain.getInstance();
     m_position = Position.getInstance();
     m_dumper = DumpBucket.getInstance();
-<<<<<<< HEAD
-    //CameraServer.startAutomaticCapture(); // calls a singleton to automatically detect the first connected camera to the roborio. Also, hi nick! ;P
-   // calls a singleton to automatically detect the first connected camera to the roborio
-   //CameraServer.startAutomaticCapture();
-=======
-   // calls a singleton to automatically detect the first connected camera to the roborio
-   //CameraServer.startAutomaticCapture();
->>>>>>> 92e39c2a04e87566e870923bd8f28f8445fcda1b
+    // calls a singleton to automatically detect the first connected camera to the roborio
+    CameraServer.startAutomaticCapture();
   }
 
   /**
